@@ -1,0 +1,88 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import OxViewEmbed from '../components/OxViewEmbed.astro';
+import BlueskyFeed from '../components/BlueskyFeed.astro';
+import PodcastFeed from '../components/PodcastFeed.astro';
+---
+
+<BaseLayout title="Erik Poppleton" description="Personal website - scientist and developer">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+    <!-- Hero Section -->
+    <section class="mb-16">
+      <h1 class="text-4xl sm:text-5xl font-bold text-[var(--color-text-primary)] mb-4">
+        Hi, I'm Erik <span class="text-[var(--color-accent)]">Poppleton</span>
+      </h1>
+      <p class="text-lg text-[var(--color-text-secondary)] max-w-2xl">
+        Scientist and developer. I work on computational biology, simulations, and data visualization.
+        Welcome to my corner of the internet.
+      </p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a
+          href="/about"
+          class="px-4 py-2 bg-[var(--color-accent)] text-white rounded-md font-medium hover:bg-[var(--color-accent-hover)] transition-colors"
+        >
+          About Me
+        </a>
+        <a
+          href="/blog"
+          class="px-4 py-2 border border-[var(--color-border)] text-[var(--color-text-primary)] rounded-md font-medium hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
+        >
+          Read the Blog
+        </a>
+      </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section class="mb-16">
+      <h2 class="text-2xl font-bold text-[var(--color-text-primary)] mb-6">
+        <span class="font-mono text-[var(--color-accent)]">$</span> Projects
+      </h2>
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ProjectCard
+          title="oxDNA"
+          description="Coarse-grained simulations of DNA/RNA nanotechnology and biophysics."
+          href="https://github.com/lorenzo-rovigatti/oxDNA"
+          tags={['Python', 'C++', 'Simulation']}
+        />
+        <ProjectCard
+          title="oxView"
+          description="Web-based visualization and editing tool for DNA/RNA nanostructures."
+          href="https://github.com/sulcgroup/oxdna-viewer"
+          tags={['TypeScript', 'Three.js', 'WebGL']}
+        />
+        <ProjectCard
+          title="Simulation Resubmitters"
+          description="Automatically queue Gromacs and oxDNA simulations on HPC clusters."
+          href="https://github.com/ErikPoppleton/resubmitters"
+          tags={['Bash', 'Simulation']}
+        />
+      </div>
+    </section>
+
+    <!-- Social Feeds Section -->
+    <section>
+      <h2 class="text-2xl font-bold text-[var(--color-text-primary)] mb-6">
+        <span class="font-mono text-[var(--color-accent)]">$</span> Activity
+      </h2>
+      <div class="grid gap-4 sm:grid-cols-2 items-start">
+        <!-- Left column -->
+        <div class="space-y-4">
+          <OxViewEmbed
+            title="oxView Demo"
+            topFile="/images/nNE.top"
+            datFile="/images/nNE.dat"
+            camFile="/images/nNE_camera.cam"
+          />
+          <PodcastFeed
+            feedUrl="https://podcast.molpi.gs/podcast.rss"
+            title="Molpigs Podcast"
+            limit={5}
+          />
+        </div>
+        <!-- Right column -->
+        <BlueskyFeed feedUrl="https://bsky.app/profile/floppleton.bsky.social/feed/aaabyxg7h7vqq" title="Molecular Programming Bluesky Feed" />
+      </div>
+    </section>
+  </div>
+</BaseLayout>

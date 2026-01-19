@@ -1,0 +1,137 @@
+---
+interface Props {
+  feedUrl: string;
+  title?: string;
+  limit?: number;
+}
+
+const { feedUrl, title = "Podcast", limit = 5 } = Astro.props;
+
+// Fetch and parse RSS feed
+const response = await fetch(feedUrl);
+const xml = await response.text();
+
+// Simple XML parsing for RSS
+function extractTag(xml: string, tag: string): string {
+  const match = xml.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`));
+  return match ? match[1].trim() : '';
+}
+
+function extractAttribute(xml: string, tag: string, attr: string): string {
+  const match = xml.match(new RegExp(`<${tag}[^>]*${attr}=["']([^"']*)["']`));
+  return match ? match[1] : '';
+}
+
+// Extract channel info
+const channel = extractTag(xml, 'channel');
+const podcastTitle = extractTag(channel, 'title');
+const podcastLink = extractTag(channel, 'link');
+const podcastImage = extractAttribute(channel, 'itunes:image', 'href') ||
+                     extractTag(extractTag(channel, 'image'), 'url');
+
+// Extract episodes
+const itemMatches = channel.match(/<item>[\s\S]*?<\/item>/g) || [];
+
+// Parse all episodes with dates
+const allEpisodes = itemMatches.map(item => {
+  const episodeTitle = extractTag(item, 'title').replace(/<!\[CDATA\[(.*?)\]\]>/g, '$1');
+  const description = extractTag(item, 'description')
+    .replace(/<!\[CDATA\[(.*?)\]\]>/gs, '$1')
+    .replace(/<[^>]+>/g, '') // Strip HTML
+    .slice(0, 150);
+  const pubDate = extractTag(item, 'pubDate');
+  const link = extractTag(item, 'link');
+  const audioUrl = extractAttribute(item, 'enclosure', 'url');
+  const duration = extractTag(item, 'itunes:duration');
+  const episodeImage = extractAttribute(item, 'itunes:image', 'href');
+
+  return {
+    title: episodeTitle,
+    description: description ? description + '…' : '',
+    pubDate: new Date(pubDate),
+    link,
+    audioUrl,
+    duration,
+    image: episodeImage || podcastImage
+  };
+});
+
+// Sort by date descending (newest first) and take limit
+const episodes = allEpisodes
+  .sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime())
+  .slice(0, limit);
+
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
+}
+
+function formatDuration(duration: string): string {
+  if (!duration) return '';
+  // Handle HH:MM:SS or seconds format
+  if (duration.includes(':')) return duration;
+  const secs = parseInt(duration);
+  const mins = Math.floor(secs / 60);
+  const hours = Math.floor(mins / 60);
+  if (hours > 0) {
+    return `${hours}:${String(mins % 60).padStart(2, '0')}:${String(secs % 60).padStart(2, '0')}`;
+  }
+  return `${mins}:${String(secs % 60).padStart(2, '0')}`;
+}
+---
+
+<div class="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-lg p-5">
+  <div class="flex items-center gap-2 mb-4">
+    <svg class="w-5 h-5 text-[var(--color-text-secondary)]" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M12 1c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-3 17v-10l9 5-9 5z"/>
+    </svg>
+    <h3 class="text-sm font-semibold text-[var(--color-text-primary)]">{title}</h3>
+  </div>
+
+  {episodes.length === 0 ? (
+    <p class="text-sm text-[var(--color-text-muted)]">No episodes found.</p>
+  ) : (
+    <div class="space-y-4">
+      {episodes.map((episode) => (
+        <a
+          href={episode.link || episode.audioUrl}
+          class="block p-3 rounded-lg bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-secondary)] transition-colors"
+        >
+          <div class="flex gap-3">
+            {episode.image && (
+              <img
+                src={episode.image}
+                alt=""
+                class="w-12 h-12 rounded object-cover flex-shrink-0"
+                loading="lazy"
+              />
+            )}
+            <div class="min-w-0 flex-1">
+              <h4 class="text-sm font-medium text-[var(--color-text-primary)] truncate">
+                {episode.title}
+              </h4>
+              <p class="text-xs text-[var(--color-text-muted)] mt-1 line-clamp-2">
+                {episode.description}
+              </p>
+              <div class="flex gap-3 mt-2 text-xs text-[var(--color-text-muted)]">
+                <span>{formatDate(episode.pubDate)}</span>
+                {episode.duration && <span>{formatDuration(episode.duration)}</span>}
+              </div>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  )}
+
+  <a
+    href={podcastLink || feedUrl.replace('/podcast.rss', '')}
+    class="mt-4 inline-flex items-center gap-1 text-sm text-[var(--color-text-muted)] hover:text-[var(--color-accent)]"
+  >
+    View all episodes
+    <span class="w-4 h-4 inline-block bg-current" style="-webkit-mask: url(/images/external-link.svg) no-repeat center; mask: url(/images/external-link.svg) no-repeat center;"></span>
+  </a>
+</div>

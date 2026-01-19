@@ -1,0 +1,134 @@
+---
+interface Props {
+  feedUrl: string;
+  title?: string;
+  limit?: number;
+}
+
+const { feedUrl, title = "Bluesky Feed", limit = 5 } = Astro.props;
+
+// Parse feed URL: https://bsky.app/profile/handle/feed/feedId
+const feedUrlMatch = feedUrl.match(/profile\/([^/]+)\/feed\/([^/]+)/);
+if (!feedUrlMatch) {
+  throw new Error(`Invalid feed URL: ${feedUrl}`);
+}
+const [, handle, feedId] = feedUrlMatch;
+
+// Resolve handle to DID
+const resolveRes = await fetch(
+  `https://public.api.bsky.app/xrpc/com.atproto.identity.resolveHandle?handle=${handle}`
+);
+const { did } = await resolveRes.json();
+
+// Construct feed URI and fetch posts
+const feedUri = `at://${did}/app.bsky.feed.generator/${feedId}`;
+const feedRes = await fetch(
+  `https://public.api.bsky.app/xrpc/app.bsky.feed.getFeed?feed=${encodeURIComponent(feedUri)}&limit=${limit}`
+);
+const feedData = await feedRes.json();
+
+interface Post {
+  post: {
+    uri: string;
+    author: {
+      handle: string;
+      displayName?: string;
+      avatar?: string;
+    };
+    record: {
+      text: string;
+      createdAt: string;
+    };
+    likeCount?: number;
+    repostCount?: number;
+    replyCount?: number;
+  };
+}
+
+const posts: Post[] = feedData.feed || [];
+
+function formatDate(dateStr: string): string {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+  });
+}
+
+function getPostUrl(uri: string, authorHandle: string): string {
+  // uri format: at://did:plc:xxx/app.bsky.feed.post/postId
+  const postId = uri.split('/').pop();
+  return `https://bsky.app/profile/${authorHandle}/post/${postId}`;
+}
+
+function truncateText(text: string, maxLength: number = 280): string {
+  if (text.length <= maxLength) return text;
+  return text.slice(0, maxLength).trim() + '…';
+}
+---
+
+<div class="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-lg p-5">
+  <div class="flex items-center gap-2 mb-4">
+    <svg class="w-5 h-5 text-[var(--color-text-secondary)]" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.056-.138.022-.276.04-.415.056-3.912.58-7.387 2.005-2.83 7.078 5.013 5.19 6.87-1.113 7.823-4.308.953 3.195 2.05 9.271 7.733 4.308 4.267-4.308 1.172-6.498-2.74-7.078a8.741 8.741 0 01-.415-.056c.14.017.279.036.415.056 2.67.297 5.568-.628 6.383-3.364.246-.828.624-5.79.624-6.478 0-.69-.139-1.861-.902-2.206-.659-.298-1.664-.62-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z" />
+    </svg>
+    <h3 class="text-sm font-semibold text-[var(--color-text-primary)]">{title}</h3>
+  </div>
+
+  {posts.length === 0 ? (
+    <p class="text-sm text-[var(--color-text-muted)]">No posts found.</p>
+  ) : (
+    <div class="space-y-4">
+      {posts.map(({ post }) => (
+        <a
+          href={getPostUrl(post.uri, post.author.handle)}
+          class="block p-3 rounded-lg bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-secondary)] transition-colors"
+        >
+          <div class="flex items-center gap-2 mb-2">
+            {post.author.avatar ? (
+              <img
+                src={post.author.avatar}
+                alt=""
+                class="w-6 h-6 rounded-full"
+                loading="lazy"
+              />
+            ) : (
+              <div class="w-6 h-6 rounded-full bg-[var(--color-border)]" />
+            )}
+            <span class="text-sm font-medium text-[var(--color-text-primary)]">
+              {post.author.displayName || post.author.handle}
+            </span>
+            <span class="text-xs text-[var(--color-text-muted)]">
+              @{post.author.handle}
+            </span>
+            <span class="text-xs text-[var(--color-text-muted)] ml-auto">
+              {formatDate(post.record.createdAt)}
+            </span>
+          </div>
+          <p class="text-sm text-[var(--color-text-secondary)] whitespace-pre-wrap">
+            {truncateText(post.record.text)}
+          </p>
+          <div class="flex gap-4 mt-2 text-xs text-[var(--color-text-muted)]">
+            {post.replyCount !== undefined && (
+              <span>{post.replyCount} replies</span>
+            )}
+            {post.repostCount !== undefined && (
+              <span>{post.repostCount} reposts</span>
+            )}
+            {post.likeCount !== undefined && (
+              <span>{post.likeCount} likes</span>
+            )}
+          </div>
+        </a>
+      ))}
+    </div>
+  )}
+
+  <a
+    href={feedUrl}
+    class="mt-4 inline-flex items-center gap-1 text-sm text-[var(--color-text-muted)] hover:text-[var(--color-accent)]"
+  >
+    View/subscribe to full feed on Bluesky
+<span class="w-4 h-4 inline-block bg-current" style="-webkit-mask: url(/images/external-link.svg) no-repeat center; mask: url(/images/external-link.svg) no-repeat center;"></span>
+  </a>
+</div>

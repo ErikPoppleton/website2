@@ -1,0 +1,85 @@
+---
+interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = Astro.url.pathname } = Astro.props;
+
+const navItems = [
+  { href: '/', label: 'Home' },
+  { href: '/about', label: 'About' },
+  { href: '/research', label: 'Research' },
+  { href: '/blog', label: 'Blog' },
+];
+
+function isActive(href: string): boolean {
+  if (href === '/') {
+    return currentPath === '/';
+  }
+  return currentPath.startsWith(href);
+}
+---
+
+<nav class="border-b border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6">
+    <div class="flex items-center justify-between h-14">
+      <a href="/" class="font-mono text-lg font-semibold text-[var(--color-text-primary)] hover:text-[var(--color-accent)]">
+        ~/erikpoppleton
+      </a>
+
+      <!-- Desktop nav -->
+      <div class="hidden sm:flex space-x-1">
+        {navItems.map((item) => (
+          <a
+            href={item.href}
+            class:list={[
+              'px-3 py-2 rounded-md text-sm font-medium transition-colors',
+              isActive(item.href)
+                ? 'bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)]'
+                : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]'
+            ]}
+          >
+            {item.label}
+          </a>
+        ))}
+      </div>
+
+      <!-- Mobile nav toggle -->
+      <button
+        id="mobile-menu-button"
+        class="sm:hidden p-2 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]"
+        aria-label="Toggle menu"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile nav menu -->
+    <div id="mobile-menu" class="hidden sm:hidden pb-4">
+      {navItems.map((item) => (
+        <a
+          href={item.href}
+          class:list={[
+            'block px-3 py-2 rounded-md text-base font-medium',
+            isActive(item.href)
+              ? 'bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)]'
+              : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]'
+          ]}
+        >
+          {item.label}
+        </a>
+      ))}
+    </div>
+  </div>
+</nav>
+
+<script>
+  const button = document.getElementById('mobile-menu-button');
+  const menu = document.getElementById('mobile-menu');
+
+  button?.addEventListener('click', () => {
+    menu?.classList.toggle('hidden');
+  });
+</script>

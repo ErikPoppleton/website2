@@ -1,0 +1,102 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+---
+
+<BaseLayout title="Research | Erik Poppleton" description="Research projects and publications">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+    <h1 class="text-4xl font-bold text-[var(--color-text-primary)] mb-4">Research</h1>
+    <p class="text-lg text-[var(--color-text-secondary)] mb-12 max-w-2xl">
+      My research focuses on computational methods for DNA nanotechnology
+      and molecular biophysics.
+    </p>
+
+    <!-- Research Areas -->
+    <section class="mb-16">
+      <h2 class="text-2xl font-bold text-[var(--color-text-primary)] mb-6">
+        Research Areas
+      </h2>
+      <div class="grid gap-6 sm:grid-cols-2">
+        <div class="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-lg p-6">
+          <h3 class="text-xl font-semibold text-[var(--color-text-primary)] mb-3">
+            DNA Nanotechnology
+          </h3>
+          <p class="text-[var(--color-text-secondary)]">
+            Design and simulation of self-assembling DNA nanostructures,
+            including DNA origami and tile-based assemblies.
+          </p>
+        </div>
+        <div class="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-lg p-6">
+          <h3 class="text-xl font-semibold text-[var(--color-text-primary)] mb-3">
+            Molecular Simulations
+          </h3>
+          <p class="text-[var(--color-text-secondary)]">
+            Coarse-grained models for nucleic acids that capture essential physics
+            while remaining computationally tractable.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Software -->
+    <section class="mb-16">
+      <h2 class="text-2xl font-bold text-[var(--color-text-primary)] mb-6">
+        Software
+      </h2>
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ProjectCard
+          title="oxDNA"
+          description="Coarse-grained simulation model for DNA and RNA."
+          href="https://github.com/lorenzo-rovigatti/oxDNA"
+          tags={['C++', 'Python', 'CUDA']}
+        />
+        <ProjectCard
+          title="oxView"
+          description="Browser-based visualization for DNA/RNA structures."
+          href="https://sulcgroup.github.io/oxdna-viewer/"
+          tags={['TypeScript', 'Three.js']}
+        />
+        <ProjectCard
+          title="tacoxDNA"
+          description="File format conversion for DNA nanotechnology."
+          href="https://github.com/lorenzo-rovigatti/tacoxDNA"
+          tags={['Python']}
+        />
+      </div>
+    </section>
+
+    <!-- Publications -->
+    <section>
+      <h2 class="text-2xl font-bold text-[var(--color-text-primary)] mb-6">
+        Selected Publications
+      </h2>
+      <ul class="space-y-6">
+        <li class="border-l-2 border-[var(--color-accent)] pl-4">
+          <p class="text-[var(--color-text-primary)] font-medium">
+            [Publication Title]
+          </p>
+          <p class="text-[var(--color-text-secondary)] text-sm mt-1">
+            [Authors], [Journal], [Year]
+          </p>
+          <a href="#" class="text-sm text-[var(--color-accent)] hover:underline mt-1 inline-block">
+            DOI
+          </a>
+        </li>
+        <li class="border-l-2 border-[var(--color-accent)] pl-4">
+          <p class="text-[var(--color-text-primary)] font-medium">
+            [Publication Title]
+          </p>
+          <p class="text-[var(--color-text-secondary)] text-sm mt-1">
+            [Authors], [Journal], [Year]
+          </p>
+          <a href="#" class="text-sm text-[var(--color-accent)] hover:underline mt-1 inline-block">
+            DOI
+          </a>
+        </li>
+      </ul>
+      <p class="mt-6 text-[var(--color-text-muted)]">
+        See my <a href="https://scholar.google.com" class="text-[var(--color-accent)] hover:underline">Google Scholar</a> for a complete list.
+      </p>
+    </section>
+  </div>
+</BaseLayout>
