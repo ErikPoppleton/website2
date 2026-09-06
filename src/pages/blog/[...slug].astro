@@ -1,9 +1,11 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { type CollectionEntry } from 'astro:content';
+import StarRating from '../../components/StarRating.astro';
+import { getVisiblePosts } from '../../lib/posts';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
+  const posts = await getVisiblePosts();
   return posts.map((post) => ({
     params: { slug: post.slug },
     props: post,
@@ -14,6 +16,9 @@ type Props = CollectionEntry<'blog'>;
 
 const post = Astro.props;
 const { Content } = await post.render();
+
+const isReview = post.data.postType === 'review' && post.data.rating !== undefined;
+const reviewOf = post.data.reviewOf;
 
 function formatDate(date: Date): string {
   return date.toLocaleDateString('en-US', {
@@ -49,6 +54,19 @@ function formatDate(date: Date): string {
       <h1 class="text-4xl font-bold text-[var(--color-text-primary)] mt-2 mb-4">
         {post.data.title}
       </h1>
+
+      {isReview && (
+        <div class="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <StarRating rating={post.data.rating!} size={24} />
+          {reviewOf && (
+            <p class="text-[var(--color-text-secondary)]">
+              <cite class="italic">{reviewOf.title}</cite>
+              {reviewOf.year && <span class="text-[var(--color-text-muted)]"> ({reviewOf.year})</span>}
+              <span class="text-[var(--color-text-muted)]"> — {reviewOf.creator}</span>
+            </p>
+          )}
+        </div>
+      )}
 
       {post.data.tags.length > 0 && (
         <div class="flex flex-wrap gap-2">

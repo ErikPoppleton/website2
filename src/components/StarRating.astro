@@ -1,0 +1,87 @@
+---
+interface Props {
+  rating: number;
+  max?: number;
+  /** Star size in pixels. */
+  size?: number;
+  /** Show the numeric value next to the stars. */
+  showValue?: boolean;
+  class?: string;
+}
+
+const { rating, max = 5, size = 20, showValue = true, class: className = '' } = Astro.props;
+
+const clamped = Math.max(0, Math.min(max, rating));
+const percent = (clamped / max) * 100;
+const stars = Array.from({ length: max });
+
+// Trim a trailing ".0" so 4 reads as "4" but 4.5 stays "4.5".
+const formatted = Number.isInteger(clamped) ? String(clamped) : clamped.toFixed(1);
+const STAR_PATH =
+  'M12 2l2.94 5.96 6.58.96-4.76 4.64 1.12 6.55L12 17.02l-5.88 3.09 1.12-6.55L2.48 8.92l6.58-.96L12 2z';
+---
+
+<span
+  class={`star-rating ${className}`}
+  role="img"
+  aria-label={`Rated ${formatted} out of ${max} stars`}
+  style={`--star-size: ${size}px`}
+>
+  <span class="star-rating__stack" aria-hidden="true">
+    <span class="star-rating__layer star-rating__track">
+      {stars.map(() => (
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d={STAR_PATH} /></svg>
+      ))}
+    </span>
+    <span class="star-rating__layer star-rating__fill" style={`width: ${percent}%`}>
+      {stars.map(() => (
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d={STAR_PATH} /></svg>
+      ))}
+    </span>
+  </span>
+  {showValue && (
+    <span class="star-rating__value" aria-hidden="true">{formatted}/{max}</span>
+  )}
+</span>
+
+<style>
+  .star-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    line-height: 1;
+  }
+
+  .star-rating__stack {
+    position: relative;
+    display: inline-block;
+  }
+
+  .star-rating__layer {
+    display: flex;
+    gap: 0.125rem;
+  }
+
+  .star-rating__layer svg {
+    width: var(--star-size);
+    height: var(--star-size);
+    flex: none;
+  }
+
+  .star-rating__track {
+    color: var(--color-bg-tertiary);
+  }
+
+  .star-rating__fill {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    color: var(--color-star, #f5b301);
+  }
+
+  .star-rating__value {
+    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+</style>

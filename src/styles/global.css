@@ -25,6 +25,14 @@ html {
   color: var(--color-text-primary);
 }
 
+/* Keep in-page anchor targets clear of the sticky nav (h-14 = 3.5rem).
+   Matches Tailwind's `sm` breakpoint, where the nav becomes sticky. */
+@media (min-width: 40rem) {
+  html {
+    scroll-padding-top: 4.5rem;
+  }
+}
+
 body {
   min-height: 100vh;
   font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
@@ -63,6 +71,89 @@ pre code {
   padding: 0;
 }
 
+/* Holographic border effect.
+   --holo-offset rotates the gradient angle on scroll (see BaseLayout).
+   --holo-stops holds the palette, swapped via [data-holo] on <html> so the
+   colormap can be changed at runtime without touching the gradient itself.
+   Mostly perceptually-uniform maps (turbo is a rainbow, included for
+   recognition); dark ends are clipped so they don't vanish into the black
+   page -- magma/inferno from t=0.25, plasma from t=0.05, turbo 0.05-0.95. */
+:root,
+:root[data-holo='viridis'] {
+  --holo-offset: 0;
+  --holo-stops: #440154 0%, #482878 12%, #3e4a89 24%, #31688e 36%, #21918c 48%,
+    #35b779 60%, #6ece58 72%, #b5de2b 84%, #fde725 100%;
+}
+
+:root[data-holo='plasma'] {
+  --holo-stops: #2a0593 0%, #5b01a5 12%, #8808a6 24%, #ae2892 36%, #cc4977 48%,
+    #e56a5d 60%, #f68f44 72%, #feba2c 84%, #f0f921 100%;
+}
+
+:root[data-holo='magma'] {
+  --holo-stops: #51127c 0%, #752181 12%, #992d80 24%, #bf3a77 36%, #e24d66 48%,
+    #f7705c 60%, #fd9b6b 72%, #fec68a 84%, #fcfdbf 100%;
+}
+
+:root[data-holo='inferno'] {
+  --holo-stops: #57106e 0%, #7c1d6d 12%, #a02a63 24%, #c33b4f 36%, #e05536 48%,
+    #f37819 60%, #fca108 72%, #f8cd37 84%, #fcffa4 100%;
+}
+
+:root[data-holo='cividis'] {
+  --holo-stops: #00224e 0%, #163770 12%, #404c6c 24%, #5e626e 36%, #777777 48%,
+    #948e77 60%, #b4a76f 72%, #d4c15f 84%, #fee838 100%;
+}
+
+/* Cyclic: first and last stop match, so the rotation has no visible seam. */
+:root[data-holo='twilight'] {
+  --holo-stops: #e2d9e2 0%, #97b7c7 12%, #637bbc 24%, #5c3499 36%, #351140 48%,
+    #64194b 60%, #a74650 72%, #c78e71 84%, #e2d9e2 100%;
+}
+
+/* Not perceptually uniform, but smooth in lightness and instantly
+   recognisable to anyone who plots. */
+:root[data-holo='turbo'] {
+  --holo-stops: #3d358b 0%, #4680f6 12%, #22c5e2 24%, #2ff19b 36%, #96fe44 48%,
+    #dde037 60%, #fea732 72%, #ed5510 84%, #a11201 100%;
+}
+
+.holo-card,
+.prose .quote-holo {
+  position: relative;
+  background: var(--color-bg-card);
+  border-radius: 0.5rem;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.holo-card::before,
+.prose .quote-holo::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 0.625rem;
+  background: linear-gradient(calc(135deg + var(--holo-offset) * 1deg), var(--holo-stops));
+  z-index: -1;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.holo-card::after,
+.prose .quote-holo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: calc(0.5rem - 1px);
+  background: var(--color-bg-card);
+  z-index: -1;
+}
+
+.holo-card:hover::before,
+.prose .quote-holo:hover::before {
+  opacity: 1;
+}
+
 /* Prose styling for blog posts */
 .prose {
   --tw-prose-body: var(--color-text-primary);
@@ -80,4 +171,85 @@ pre code {
   --tw-prose-pre-bg: var(--color-bg-secondary);
   --tw-prose-th-borders: var(--color-border);
   --tw-prose-td-borders: var(--color-border);
+}
+
+/* ---------------------------------------------------------------------------
+   Quote boxes for blog posts (esp. reviews).
+   Plain class names, not Tailwind utilities, so they work in raw HTML
+   inside .md files without relying on Tailwind's content scanning.
+   --------------------------------------------------------------------------- */
+
+/* Attribution line, for use inside .quote-holo. */
+.prose .quote-attrib {
+  display: block;
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  font-style: normal;
+  color: var(--color-text-muted);
+}
+
+.prose .quote-attrib::before {
+  content: '— ';
+}
+
+/* Quote sitting inside the site's viridis holo border.
+   Shares the border machinery with .holo-card above; one class is enough. */
+.prose .quote-holo {
+  margin: 2rem 0;
+  padding: 1.25rem 1.5rem;
+  font-style: italic;
+  color: var(--color-text-secondary);
+  border-left-width: 2px;
+}
+
+/* The typography plugin wraps blockquote paragraphs in curly quotes; the box
+   already reads as a quote, and they land wrong on multi-paragraph quotes. */
+.prose .quote-holo p::before,
+.prose .quote-holo p::after {
+  content: none;
+}
+
+.prose .quote-holo > p:first-child {
+  margin-top: 0;
+}
+
+.prose .quote-holo > p:last-of-type {
+  margin-bottom: 0;
+}
+
+/* Colormap picker in the footer. */
+.holo-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.holo-picker__swatch {
+  width: 2.75rem;
+  height: 0.75rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--color-border);
+  background: linear-gradient(90deg, var(--holo-stops));
+}
+
+.holo-picker__select {
+  padding: 0.25rem 0.5rem;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.holo-picker__select:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-text-muted);
+}
+
+.holo-picker__select:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }

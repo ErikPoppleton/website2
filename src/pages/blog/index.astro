@@ -1,10 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
+import StarRating from '../../components/StarRating.astro';
+import { getVisiblePosts } from '../../lib/posts';
 
-const posts = (await getCollection('blog'))
-  .filter((post) => !post.data.draft)
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const posts = await getVisiblePosts();
 
 function formatDate(date: Date): string {
   return date.toLocaleDateString('en-US', {
@@ -20,7 +19,10 @@ function formatDate(date: Date): string {
     <header class="mb-12">
       <h1 class="text-4xl font-bold text-[var(--color-text-primary)] mb-4">Blog</h1>
       <p class="text-lg text-[var(--color-text-secondary)]">
-        Thoughts on science, programming, and other things I find interesting.
+        I'm not sure how much I will actually use this, but somebody once told me that the best way to stress-test your thoughts is to see if you're willing to put them on the internet.
+      </p>
+      <p class="text-lg text-[var(--color-text-secondary)]">
+        So here are some thoughts, tastes, and takes for the world to see!
       </p>
     </header>
 
@@ -39,8 +41,18 @@ function formatDate(date: Date): string {
                   {formatDate(post.data.pubDate)}
                 </time>
                 <h2 class="text-xl font-semibold text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors mt-1 mb-2">
+                  {post.data.draft && (
+                    <span class="align-middle mr-2 px-2 py-0.5 text-xs font-mono uppercase tracking-wide text-[#f5b301] border border-[#f5b301] rounded">
+                      draft
+                    </span>
+                  )}
                   {post.data.title}
                 </h2>
+                {post.data.postType === 'review' && post.data.rating !== undefined && (
+                  <div class="mb-2">
+                    <StarRating rating={post.data.rating} size={16} />
+                  </div>
+                )}
                 <p class="text-[var(--color-text-secondary)]">
                   {post.data.description}
                 </p>

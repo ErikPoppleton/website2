@@ -6,37 +6,65 @@ import ProjectCard from '../components/ProjectCard.astro';
 <BaseLayout title="Research | Erik Poppleton" description="Research projects and publications">
   <div class="max-w-5xl mx-auto px-4 sm:px-6 py-12">
     <h1 class="text-4xl font-bold text-[var(--color-text-primary)] mb-4">Research</h1>
+    <section class="mb-16">
     <p class="text-lg text-[var(--color-text-secondary)] mb-12 max-w-2xl">
-      My research focuses on computational methods for DNA nanotechnology
-      and molecular biophysics.
+      Every cell in our bodies is a wonder of nanotechnology, alive with thousands of molecular machines sensing their surroundings and taking semi-autonomous action through dissipating energy.
+      All of this happens without any sort of centralized overseer. So how can we learn to build like biology?
+      We can start with biology's central innovation: the encoding of information into structured biopolymers.
+      The molecular codes of DNA, RNA, proteins, and polysaccharides give life its dynamism and function.
+      Genes, with their encoded information and surrounding regulatory regions can be easily copied and decoded thanks to the regularity of DNA structure and chemistry.
+      Those codes can then be transcribed and translated into RNA and proteins, each with a higher degree of structural and chemical diversity.
+      Today, scientists have incredible powers to read, write, and design the fundamental molecules of biology.
+      So what can we do with that power?
     </p>
 
-    <!-- Research Areas -->
-    <section class="mb-16">
-      <h2 class="text-2xl font-bold text-[var(--color-text-primary)] mb-6">
-        Research Areas
-      </h2>
-      <div class="grid gap-6 sm:grid-cols-2">
-        <div class="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-lg p-6">
-          <h3 class="text-xl font-semibold text-[var(--color-text-primary)] mb-3">
-            DNA Nanotechnology
-          </h3>
-          <p class="text-[var(--color-text-secondary)]">
-            Design and simulation of self-assembling DNA nanostructures,
-            including DNA origami and tile-based assemblies.
-          </p>
-        </div>
-        <div class="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-lg p-6">
-          <h3 class="text-xl font-semibold text-[var(--color-text-primary)] mb-3">
-            Molecular Simulations
-          </h3>
-          <p class="text-[var(--color-text-secondary)]">
-            Coarse-grained models for nucleic acids that capture essential physics
-            while remaining computationally tractable.
-          </p>
-        </div>
-      </div>
+    <div class="prose prose-lg max-w-none">
+    <h2 class="text-2xl font-bold text-[var(--color-text-primary)] mb-6"> What is molecular programming?</h2>
+      <p>
+        Molecular programming is a term for a broad area of science which studies and engineers the encoding and processing of information at the molecular scale.
+        This means pulling diverse research and concepts from many fields, including biology, chemistry, physics, computer science, and information/complex systems theory.
+        I work on implementations of molecular programs using nucleic acids, but alternative approaches are also possible using proteins or even solutions of small molecules.
+        Theoretical areas in the field include:
+      </p>
+      <ul>
+        <li>Fundamental theory of self-assembly</li>
+        <li>Abstracting computation as theoretical chemical reaction networks</li>
+        <li>Compilation of theoretical information processing schemes into real molecules</li>
+      </ul>
+      <p>
+        Which leads to technological capabilities using nucleic acids as building blocks such as:
+      <ul>
+        <li>Nanoscale engineering with nucleic acid nanotechnology</li>
+        <li>Complex diagnostics and combinatorial computing with toehold-mediated strand displacement</li>
+        <li>DNA data storage and retrieval</li>
+      </ul>
+      </p>
+      <p>
+        We are at an exciting time in the development of Molecular Programming.
+        The field has realized a variety of composable, programmable molecular systems which can be employed in diverse areas such as complex diagnostics and nanoscale photonics.
+        Watch this space for breakthroughs in scale, integration and robustness, which enable new frontiers in nanotechnology. 
+        If you want to learn more about the field, check out the website of our professional society, <a href=https://isnsce.org>ISNSCE</a>
+      </p>
+      <h2 class="text-2xl font-bold text-[var(--color-text-primary)] mb-6">My research</h2>
+      <p>
+        Our ability to build complex, nanoscale structures out of nucleic acids depends both on our understanding of material properties at the nanoscale, particularly flexibility, and our ability to design molecular contacts to control said flexibility.
+        By using physics-based simulations, we can diagnose problems with designs and build more precise molecular interfaces.
+      </p>
+      <p>
+        My research focuses on building bridges between physics- and data-based molecular modeling and wet-lab implementation of nucleic acid nanostructures. 
+        Using molecular models, I have worked with my experimental colleagues to, characterize flexibility, identify failure modes, and refine designs.
+        This requires me to be well-versed in both experimental and computational methods and to effectively communicate to specialists in both areas.
+      </p>
+      <p>
+        I am particularly interested in RNA structure. The RNA nanotechnology field started by composing natural RNA motifs, which have intricate 3D architectures, into designed nanostructures.
+        These days, we have moved away from that paradigm towards toward design techniques which more resembles DNA origami—structures made up of canonical base-pairs and holiday junctions. 
+        However, this comes at a cost of precision and flexibility.
+        Compared with natural RNA structures, such as the ribosome, our RNA nanostructures are crude, imprecise, and flexible.
+        Using computational models, I hope to enable the next generation of RNA structures which combine the scalability of RNA origami, with the precise atomic arrangement of natural RNA.
+      </p>
+    </div>
     </section>
+  </div>
 
     <!-- Software -->
     <section class="mb-16">
@@ -48,19 +76,19 @@ import ProjectCard from '../components/ProjectCard.astro';
           title="oxDNA"
           description="Coarse-grained simulation model for DNA and RNA."
           href="https://github.com/lorenzo-rovigatti/oxDNA"
-          tags={['C++', 'Python', 'CUDA']}
+          tags={['C++', 'Python', 'CUDA', 'Simulation']}
         />
         <ProjectCard
           title="oxView"
-          description="Browser-based visualization for DNA/RNA structures."
+          description="Browser-based editing and visualization of DNA/RNA structures."
           href="https://sulcgroup.github.io/oxdna-viewer/"
-          tags={['TypeScript', 'Three.js']}
+          tags={['TypeScript', 'Three.js', 'Visualization']}
         />
         <ProjectCard
-          title="tacoxDNA"
-          description="File format conversion for DNA nanotechnology."
-          href="https://github.com/lorenzo-rovigatti/tacoxDNA"
-          tags={['Python']}
+          title="Nanobase"
+          description="Design file repository for DNA/RNA structures."
+          href="https://nanobase.org/"
+          tags={['SQL', 'Community resources']}
         />
       </div>
     </section>
@@ -73,29 +101,84 @@ import ProjectCard from '../components/ProjectCard.astro';
       <ul class="space-y-6">
         <li class="border-l-2 border-[var(--color-accent)] pl-4">
           <p class="text-[var(--color-text-primary)] font-medium">
-            [Publication Title]
+            Programmable Edge-to-Edge Assembly of RNA Nanostructures
           </p>
           <p class="text-[var(--color-text-secondary)] text-sm mt-1">
-            [Authors], [Journal], [Year]
+            Cody Geary, Mai P Tran, Erik Poppleton, Alena Taskina, Kerstin Göpfrich — <em>ACS Nano</em> 20(31): 22093-22103, 2026
           </p>
-          <a href="#" class="text-sm text-[var(--color-accent)] hover:underline mt-1 inline-block">
-            DOI
+          <a href="https://www.biorxiv.org/content/10.64898/2026.03.29.714238.abstract" class="text-sm text-[var(--color-accent)] hover:underline mt-1 inline-block">
+            Paper
           </a>
         </li>
         <li class="border-l-2 border-[var(--color-accent)] pl-4">
           <p class="text-[var(--color-text-primary)] font-medium">
-            [Publication Title]
+            PyFuRNAce: an integrated design engine for RNA origami
           </p>
           <p class="text-[var(--color-text-secondary)] text-sm mt-1">
-            [Authors], [Journal], [Year]
+            Luca Monari, Ina Braun, William Verstraeten, Erik Poppleton, Kerstin Göpfrich — <em>Nature Communications</em> 16, 10815, 2025
           </p>
-          <a href="#" class="text-sm text-[var(--color-accent)] hover:underline mt-1 inline-block">
-            DOI
+          <a href="https://doi.org/10.1021/acsnano.6c08211" class="text-sm text-[var(--color-accent)] hover:underline mt-1 inline-block">
+            Paper
+          </a>
+        </li>
+        <li class="border-l-2 border-[var(--color-accent)] pl-4">
+          <p class="text-[var(--color-text-primary)] font-medium">
+            Genetic encoding and expression of RNA origami cytoskeletons in synthetic cells
+          </p>
+          <p class="text-[var(--color-text-secondary)] text-sm mt-1">
+            Mai P Tran, Taniya Chakraborty, Erik Poppleton, Luca Monari, Maja Illig, Franziska Giessler, Kerstin Göpfrich — <em>Nature Nanotechnology</em> 20, 664-671, 2025
+          </p>
+          <a href="https://www.nature.com/articles/s41565-025-01879-3" class="text-sm text-[var(--color-accent)] hover:underline mt-1 inline-block">
+            Paper
+          </a>
+        </li>
+        <li class="border-l-2 border-[var(--color-accent)] pl-4">
+          <p class="text-[var(--color-text-primary)] font-medium">
+            A rhythmically pulsing leaf-spring DNA-origami nanoengine that drives a passive follower
+          </p>
+          <p class="text-[var(--color-text-secondary)] text-sm mt-1">
+            Mathias Centola, Erik Poppleton, Sujay Ray, Martin Centola, Robb Welty, Julián Valero, Nils G Walter, Petr Šulc, Michael Famulok — <em>Nature Nanotechnology</em> 19, 226-236, 2024
+          </p>
+          <a href="https://www.nature.com/articles/s41565-023-01516-x" class="text-sm text-[var(--color-accent)] hover:underline mt-1 inline-block">
+            Paper
+          </a>
+        </li>
+        <li class="border-l-2 border-[var(--color-accent)] pl-4">
+          <p class="text-[var(--color-text-primary)] font-medium">
+            oxDNA: coarse-grained simulations of nucleic acids made simple
+          </p>
+          <p class="text-[var(--color-text-secondary)] text-sm mt-1">
+            Erik Poppleton, Michael Matthies, Debesh Mandal, Flavio Romano, Petr Šulc, Lorenzo Rovigatti — <em>Journal of Open Source Software</em> 8(81), 4693, 2023
+          </p>
+          <a href="https://joss.theoj.org/papers/10.21105/joss.04693" class="text-sm text-[var(--color-accent)] hover:underline mt-1 inline-block">
+            Paper
+          </a>
+        </li>
+        <li class="border-l-2 border-[var(--color-accent)] pl-4">
+          <p class="text-[var(--color-text-primary)] font-medium">
+            RNA origami: design, simulation and application
+          </p>
+          <p class="text-[var(--color-text-secondary)] text-sm mt-1">
+            Erik Poppleton, Niklas Urbanek, Taniya Chakraborty, Alessandra Griffo, Luca Monari, Kerstin Göpfrich — <em>RNA Biology</em> 20(1), 510-524, 2023
+          </p>
+          <a href="https://www.tandfonline.com/doi/full/10.1080/15476286.2023.2237719" class="text-sm text-[var(--color-accent)] hover:underline mt-1 inline-block">
+            Paper
+          </a>
+        </li>
+        <li class="border-l-2 border-[var(--color-accent)] pl-4">
+          <p class="text-[var(--color-text-primary)] font-medium">
+            Design and simulation of DNA, RNA and hybrid protein-nucleic acid nanostructures with oxView
+          </p>
+          <p class="text-[var(--color-text-secondary)] text-sm mt-1">
+            Joakim Bohlin, Michael Matthies, Erik Poppleton, Jonah Procyk, Aatmik Mallya, Hao Yan, Petr Šulc — <em>Nature Protocols</em> 17, 1762-1788, 2022
+          </p>
+          <a href="https://www.nature.com/articles/s41596-022-00688-5" class="text-sm text-[var(--color-accent)] hover:underline mt-1 inline-block">
+            Paper
           </a>
         </li>
       </ul>
       <p class="mt-6 text-[var(--color-text-muted)]">
-        See my <a href="https://scholar.google.com" class="text-[var(--color-accent)] hover:underline">Google Scholar</a> for a complete list.
+        See <a href="https://scholar.google.com/citations?user=nmkgqNEAAAAJ" class="text-[var(--color-accent)] hover:underline">Google Scholar</a> for a complete list.
       </p>
     </section>
   </div>

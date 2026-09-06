@@ -22,7 +22,7 @@ const {
 const frameId = `oxview-frame-${Math.random().toString(36).slice(2, 9)}`;
 ---
 
-<div class="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-lg p-5">
+<div class="holo-card p-5">
   <div class="flex items-center gap-2 mb-4">
     <svg class="w-5 h-5 text-[var(--color-text-secondary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
@@ -53,7 +53,7 @@ const frameId = `oxview-frame-${Math.random().toString(36).slice(2, 9)}`;
   </a>
   <br>
   <a
-    href="https://www.nature.com/articles/s41565-023-01516-x"
+    hrThef="https://www.nature.com/articles/s41565-023-01516-x"
     class="mt-4 inline-flex items-center gap-1 text-sm text-[var(--color-text-muted)] hover:text-[var(--color-accent)]"
   >
     About this structure
@@ -62,34 +62,23 @@ const frameId = `oxview-frame-${Math.random().toString(36).slice(2, 9)}`;
 </div>
 
 <script>
-  function initOxViewFrame(frame: HTMLIFrameElement) {
+  async function initOxViewFrame(frame: HTMLIFrameElement) {
     const inboxSettings = JSON.parse(frame.dataset.inboxSettings || '["Monomer", "Origin"]');
     const viewSettings = JSON.parse(frame.dataset.viewSettings);
 
-    const files = [frame.dataset.topFile,
-                  frame.dataset.datFile, 
-                  frame.dataset.camFile];
-    const blobs: Blob[] = [];
-
-    // Fetch files synchronously to maintain order
-    for (const file of files) {
-      const xhr = new XMLHttpRequest();
-      xhr.open("GET", file, false);
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-          blobs.push(new Blob([xhr.responseText], { type: 'text/plain' }));
-        }
-      };
-      xhr.send(null);
-    }
-
-    const extensions = ["top", "dat", "cam"];
+    const filePaths = [frame.dataset.topFile, frame.dataset.datFile, frame.dataset.camFile];
+    const blobs = await Promise.all(
+      filePaths.map(async (path) => {
+        const res = await fetch(path!);
+        return new Blob([await res.text()], { type: 'text/plain' });
+      })
+    );
 
     frame.contentWindow?.postMessage(
       {
         message: 'iframe_drop',
         files: blobs,
-        ext: extensions,
+        ext: ["top", "dat", "cam"],
         inbox_settings: inboxSettings,
         view_settings: viewSettings
       },
@@ -97,9 +86,24 @@ const frameId = `oxview-frame-${Math.random().toString(36).slice(2, 9)}`;
     );
   }
 
-  // Initialize all oxView frames
+  // For each oxView iframe, initialise once it signals ready.
+  // oxView sends 'oxview_ready' after registering its own message listener,
+  // which is more reliable than the iframe 'load' event (which can be missed
+  // when the page is served from cache and fires before this module script runs).
   document.querySelectorAll('iframe[id^="oxview-frame-"]').forEach((frame) => {
     const iframe = frame as HTMLIFrameElement;
-    iframe.addEventListener('load', () => initOxViewFrame(iframe));
+    let initialized = false;
+
+    function initOnce() {
+      if (initialized) return;
+      initialized = true;
+      initOxViewFrame(iframe);
+    }
+
+    window.addEventListener('message', (event: MessageEvent) => {
+      if (event.source === iframe.contentWindow && event.data?.message === 'oxview_ready') {
+        initOnce();
+      }
+    });
   });
 </script>

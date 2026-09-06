@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
 ---
 
 <BaseLayout title="About | Erik Poppleton" description="About Erik Poppleton - scientist and developer">
@@ -7,36 +8,87 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <h1 class="text-4xl font-bold text-[var(--color-text-primary)] mb-8">About Me</h1>
 
     <div class="prose prose-lg max-w-none">
-      <p>
-        I'm a scientist working at the intersection of biology, physics, and computation.
-        My research focuses on DNA nanotechnology and molecular simulations.
-      </p>
-
-      <h2>What I do</h2>
-      <p>
-        I develop computational tools for studying DNA and RNA at the molecular level.
-        This includes:
-      </p>
-      <ul>
-        <li>Coarse-grained molecular dynamics simulations</li>
-        <li>Visualization software for nanostructures</li>
-        <li>File format converters and analysis tools</li>
-      </ul>
+      
 
       <h2>Background</h2>
       <p>
-        [Add your background here - education, previous positions, etc.]
+        Originally from the dry mountains and valleys of Salt Lake City, I've since lived the academic life, moving on to a new city for each new research direction.
+        I've wandered through many scientific fields, from biophysical characterization of artificial collagen-like molecules during my bachelors at Tufts University, 
+        to digging holes in the high-altitude sun for a soil biogeochemistry internship at Lawrence Berkeley National Laboratory, 
+        to a PhD which mixed experiments, simulations, and software infrastructure for the Molecular Programming field at ASU,
+        to my current position as a postdoc using simulations to understand RNA interactions at Heidelberg University and the MPI for Polymer Research.
+        Each new position has been a new opportunity to explore and grow as a scientist and as a person.
+      </p>
+      <p>
+        Two things have driven my scientific journey: a deep love of the natural world and an insatiable curiosity about complex systems.
+        I started both my bachelors and PhDs convinced I was going to study life-across-scales, first in wildlife ecology, and then in bioremediation of human-impacted soils.
+        Clearly from my resume, I didn't keep that focus, and kept coming back to a question at the other end of the length-scale: how can we design materials from by controlling molecules themselves?
+        Nevertheless, when not at the lab, I can often be found wandering the nearest mountains, pausing to take photos of mushrooms and enjoying the susurrations of the leaves.
+        Check out the <a href="/research">Research</a> page to learn more about my current research.
       </p>
 
-      <h2>Contact</h2>
-      <p>
+      <h3>My academic family tree</h3>
+      <b>Postdoc advisors</b><br>
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
+        <ProjectCard
+          title="Kerstin Göpfrich"
+          description="Zentrum für Molekulare Biologie<br>Heidelberg University"
+          href="https://goepfrichgroup.de"
+          tags={['Synthetic Cells', 'RNA nanotech']}
+        />
+        <ProjectCard
+          title="Frauke Gräter"
+          description="Biomolecular Mechanics Group<br>MPI for Polymer Research "
+          href="https://www.mpip-mainz.mpg.de/en/graeter"
+          tags={['Biomechanics', 'Simulation', 'Collagen']}
+        />
+      </div>
+      <p></p>
+      <b>PhD advisors</b><br>
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
+        <ProjectCard
+          title="Petr Šulc"
+          description="Center for Molecular Design and Biomimetics<br>Arizona State University"
+          href="https://sulclab.org"
+          tags={['DNA/RNA nanotech', 'Simulation']}
+        />
+        <ProjectCard
+          title="Hao Yan"
+          description="Center for Molecular Design and Biomimetics<br>Arizona State University"
+          href="https://yanlab-asu.com"
+          tags={['DNA/RNA nanotech', 'Therapeutics']}
+        />
+      </div>
+      <p></p>
+      <b>Bachelors thesis advisors</b><br>
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
+        <ProjectCard
+          title="Barbara Brodsky"
+          description="Biomedical Engineering<br>Tufts University"
+          href="https://engineering.tufts.edu/bme/people/faculty/barbara-brodsky"
+          tags={['Biophysics', 'Collagen']}
+        />
+        <ProjectCard
+          title="David Kaplan"
+          description="Biomedical Engineering<br>Tufts University"
+          href="https://sites.tufts.edu/kaplanlab/"
+          tags={['Biomaterials', 'Bioproduction']}
+        />
+      </div>
+
+      <h2>The formal stuff</h2>
+      Need my <a href="/cv/Erik Poppleton resume.pdf">resume</a>? <br>
+      How about a full <a href="/cv/Erik Poppleton CV.pdf">academic CV</a>?
+
+      <h2>Connect</h2>
         You can find me on:
-      </p>
-      <ul>
-        <li><a href="https://github.com/erikpoppleton">GitHub</a></li>
-        <li><a href="https://bsky.app/profile/erikpoppleton.bsky.social">Bluesky</a></li>
-        <li>Email: [your email]</li>
-      </ul>
+        <p>
+        <a href="https://bsky.app/profile/erikpoppleton.bsky.social">Bluesky</a><br>
+        <a href="https://www.linkedin.com/in/erik-poppleton-473098218/">LinkedIn</a><br>
+        <a href="https://github.com/erikpoppleton">GitHub</a><br>
+        <a href="https://scholar.google.com/citations?user=nmkgqNEAAAAJ" class="text-[var(--color-accent)] hover:underline">Google Scholar</a><br>
+        Email: e.poppleton [at] zmbh.uni-heidelberg.de<br>
+        </p>
     </div>
   </div>
 </BaseLayout>

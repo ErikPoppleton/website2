@@ -11,32 +11,18 @@ import PodcastFeed from '../components/PodcastFeed.astro';
     <!-- Hero Section -->
     <section class="mb-16">
       <h1 class="text-4xl sm:text-5xl font-bold text-[var(--color-text-primary)] mb-4">
-        Hi, I'm Erik <span class="text-[var(--color-accent)]">Poppleton</span>
+        Erik Poppleton
       </h1>
       <p class="text-lg text-[var(--color-text-secondary)] max-w-2xl">
-        Scientist and developer. I work on computational biology, simulations, and data visualization.
-        Welcome to my corner of the internet.
+        Scientist—Molecular Programmer—Software Developer <br>
+        Using data- and physics-driven methods to advance nucleic acid structural biology and molecular design.
       </p>
-      <div class="mt-6 flex flex-wrap gap-3">
-        <a
-          href="/about"
-          class="px-4 py-2 bg-[var(--color-accent)] text-white rounded-md font-medium hover:bg-[var(--color-accent-hover)] transition-colors"
-        >
-          About Me
-        </a>
-        <a
-          href="/blog"
-          class="px-4 py-2 border border-[var(--color-border)] text-[var(--color-text-primary)] rounded-md font-medium hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
-        >
-          Read the Blog
-        </a>
-      </div>
     </section>
 
     <!-- Projects Section -->
     <section class="mb-16">
       <h2 class="text-2xl font-bold text-[var(--color-text-primary)] mb-6">
-        <span class="font-mono text-[var(--color-accent)]">$</span> Projects
+        <span class="font-mono text-[var(--color-accent)]"></span> Software
       </h2>
       <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <ProjectCard
@@ -51,19 +37,13 @@ import PodcastFeed from '../components/PodcastFeed.astro';
           href="https://github.com/sulcgroup/oxdna-viewer"
           tags={['TypeScript', 'Three.js', 'WebGL']}
         />
-        <ProjectCard
-          title="Simulation Resubmitters"
-          description="Automatically queue Gromacs and oxDNA simulations on HPC clusters."
-          href="https://github.com/ErikPoppleton/resubmitters"
-          tags={['Bash', 'Simulation']}
-        />
       </div>
     </section>
 
     <!-- Social Feeds Section -->
     <section>
       <h2 class="text-2xl font-bold text-[var(--color-text-primary)] mb-6">
-        <span class="font-mono text-[var(--color-accent)]">$</span> Activity
+        <span class="font-mono text-[var(--color-accent)]"></span> Demos and feeds
       </h2>
       <div class="grid gap-4 sm:grid-cols-2 items-start">
         <!-- Left column -->
@@ -81,7 +61,7 @@ import PodcastFeed from '../components/PodcastFeed.astro';
           />
         </div>
         <!-- Right column -->
-        <BlueskyFeed feedUrl="https://bsky.app/profile/floppleton.bsky.social/feed/aaabyxg7h7vqq" title="Molecular Programming Bluesky Feed" />
+        <BlueskyFeed feedUrl="https://bsky.app/profile/poppleton.phd/feed/aaabyxg7h7vqq" title="Molecular Programming Bluesky Feed" />
       </div>
     </section>
   </div>

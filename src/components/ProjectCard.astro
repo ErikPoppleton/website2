@@ -9,7 +9,7 @@ interface Props {
 const { title, description, href, tags = [] } = Astro.props;
 ---
 
-<article class="group bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-lg p-5 transition-all hover:border-[var(--color-accent)] hover:shadow-lg hover:shadow-[var(--color-accent)]/5">
+<article class="group holo-card p-5 transition-all">
   {href ? (
     <a href={href} class="block">
       <h3 class="text-lg font-semibold text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors mb-2">
@@ -22,9 +22,7 @@ const { title, description, href, tags = [] } = Astro.props;
     </h3>
   )}
 
-  <p class="text-[var(--color-text-secondary)] text-sm mb-3">
-    {description}
-  </p>
+  <p class="text-[var(--color-text-secondary)] text-sm mb-3" set:html={description} />
 
   {tags.length > 0 && (
     <div class="flex flex-wrap gap-2">

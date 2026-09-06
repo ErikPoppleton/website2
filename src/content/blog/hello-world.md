@@ -2,7 +2,15 @@
 title: "Hello, World!"
 description: "Welcome to my new blog. Here's what I'm planning to write about."
 pubDate: 2026-01-19
-tags: ["meta", "personal"]
+tags: ["meta", "personal", "review"]
+draft: true
+postType: review
+rating: 4.5
+reviewOf:
+  title: "The Hitchhiker's Guide to the Galaxy"
+  creator: "Douglas Adams"
+  kind: book
+  year: 1979
 ---
 
 Welcome to my blog! This is a space where I'll share thoughts on:
@@ -30,5 +38,22 @@ def hello_world():
     print("Hello, World!")
     return 42  # The answer to everything
 ```
+
+## Reviews
+
+I also plan to post book and music reviews. Those posts get a star rating in the header,
+which comes from the frontmatter:
+
+```yaml
+postType: review
+rating: 4.5          # 0-5, in half-star steps
+reviewOf:
+  title: "The Hitchhiker's Guide to the Galaxy"
+  creator: "Douglas Adams"
+  kind: book         # book | album | film | game | other
+  year: 1979         # optional
+```
+
+This very post carries that frontmatter as a live example — hence the stars above.
 
 Stay tuned for more posts!
