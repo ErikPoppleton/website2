@@ -1,4 +1,6 @@
 ---
+import { fetchJson } from '../lib/fetchFeed';
+
 interface Props {
   feedUrl: string;
   title?: string;
@@ -7,25 +9,43 @@ interface Props {
 
 const { feedUrl, title = "Bluesky Feed", limit = 5 } = Astro.props;
 
+// Fetched at build time, so nothing here may throw: a Bluesky outage must not
+// fail the whole build. On any failure we render a notice instead.
+let posts: Post[] = [];
+let loadFailed = false;
+
 // Parse feed URL: https://bsky.app/profile/handle/feed/feedId
 const feedUrlMatch = feedUrl.match(/profile\/([^/]+)\/feed\/([^/]+)/);
+
 if (!feedUrlMatch) {
-  throw new Error(`Invalid feed URL: ${feedUrl}`);
+  console.warn(`[feed] BlueskyFeed: could not parse feed URL: ${feedUrl}`);
+  loadFailed = true;
+} else {
+  const [, handle, feedId] = feedUrlMatch;
+
+  // Resolve handle to DID
+  const resolved = await fetchJson<{ did?: string }>(
+    `https://public.api.bsky.app/xrpc/com.atproto.identity.resolveHandle?handle=${handle}`,
+    'BlueskyFeed handle'
+  );
+
+  if (!resolved?.did) {
+    loadFailed = true;
+  } else {
+    // Construct feed URI and fetch posts
+    const feedUri = `at://${resolved.did}/app.bsky.feed.generator/${feedId}`;
+    const feedData = await fetchJson<{ feed?: Post[] }>(
+      `https://public.api.bsky.app/xrpc/app.bsky.feed.getFeed?feed=${encodeURIComponent(feedUri)}&limit=${limit}`,
+      'BlueskyFeed posts'
+    );
+
+    if (!feedData) {
+      loadFailed = true;
+    } else {
+      posts = feedData.feed ?? [];
+    }
+  }
 }
-const [, handle, feedId] = feedUrlMatch;
-
-// Resolve handle to DID
-const resolveRes = await fetch(
-  `https://public.api.bsky.app/xrpc/com.atproto.identity.resolveHandle?handle=${handle}`
-);
-const { did } = await resolveRes.json();
-
-// Construct feed URI and fetch posts
-const feedUri = `at://${did}/app.bsky.feed.generator/${feedId}`;
-const feedRes = await fetch(
-  `https://public.api.bsky.app/xrpc/app.bsky.feed.getFeed?feed=${encodeURIComponent(feedUri)}&limit=${limit}`
-);
-const feedData = await feedRes.json();
 
 interface Post {
   post: {
@@ -45,7 +65,6 @@ interface Post {
   };
 }
 
-const posts: Post[] = feedData.feed || [];
 
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr);
@@ -72,7 +91,12 @@ function truncateText(text: string, maxLength: number = 280): string {
     <h3 class="text-sm font-semibold text-[var(--color-text-primary)]">{title}</h3>
   </div>
 
-  {posts.length === 0 ? (
+  {loadFailed ? (
+    <p class="text-sm text-[var(--color-text-muted)]">
+      Couldn't reach Bluesky when this page was built.
+      <a href={feedUrl} class="text-[var(--color-accent)] hover:underline">View the feed directly</a>.
+    </p>
+  ) : posts.length === 0 ? (
     <p class="text-sm text-[var(--color-text-muted)]">No posts found.</p>
   ) : (
     <div class="space-y-4">

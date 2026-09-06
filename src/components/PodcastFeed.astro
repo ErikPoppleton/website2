@@ -1,4 +1,6 @@
 ---
+import { fetchText } from '../lib/fetchFeed';
+
 interface Props {
   feedUrl: string;
   title?: string;
@@ -7,9 +9,11 @@ interface Props {
 
 const { feedUrl, title = "Podcast", limit = 5 } = Astro.props;
 
-// Fetch and parse RSS feed
-const response = await fetch(feedUrl);
-const xml = await response.text();
+// Fetched at build time, so a fetch failure must not throw and break the
+// build. On failure xml is null and we render a notice instead; the parsing
+// below is all regex over a string, so an empty feed degrades gracefully.
+const xml = await fetchText(feedUrl, 'PodcastFeed');
+const loadFailed = xml === null;
 
 // Simple XML parsing for RSS
 function extractTag(xml: string, tag: string): string {
@@ -23,7 +27,7 @@ function extractAttribute(xml: string, tag: string, attr: string): string {
 }
 
 // Extract channel info
-const channel = extractTag(xml, 'channel');
+const channel = extractTag(xml ?? '', 'channel');
 const podcastTitle = extractTag(channel, 'title');
 const podcastLink = extractTag(channel, 'link');
 const podcastImage = extractAttribute(channel, 'itunes:image', 'href') ||
@@ -87,7 +91,12 @@ function formatDuration(duration: string): string {
     <h3 class="text-sm font-semibold text-[var(--color-text-primary)]">{title}</h3>
   </div>
 
-  {episodes.length === 0 ? (
+  {loadFailed ? (
+    <p class="text-sm text-[var(--color-text-muted)]">
+      Couldn't reach the podcast feed when this page was built.
+      <a href={feedUrl} class="text-[var(--color-accent)] hover:underline">Open the RSS feed</a>.
+    </p>
+  ) : episodes.length === 0 ? (
     <p class="text-sm text-[var(--color-text-muted)]">No episodes found.</p>
   ) : (
     <div class="space-y-4">
