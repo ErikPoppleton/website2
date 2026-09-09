@@ -1,6 +1,6 @@
 ---
 title: The Toaster Project
-description: All of modern economics summarized in a shitty toaster
+description: Modern economics summarized in a shitty, whimsical toaster
 pubDate: 2026-09-09
 tags:
   - review
